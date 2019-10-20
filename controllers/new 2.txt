@@ -1,0 +1,143 @@
+OrderID
+CustomerName
+CustomerMobileNo
+CustomerAddress
+CustomerArea
+ChefName
+ChefMobileNo
+ChefAddress
+ChefArea
+Total
+MenuItem
+Quantity
+Status
+RejectedReason
+SpecialInstructions
+DeliveryStatus
+PaymentStatus
+OrderAt
+UpdateAt
+DeliveryName
+
+
+
+                {
+                    "bVisible": false, "aTargets": [0]
+                },
+				
+				
+				
+
+				
+				
+				
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+
+        jQuery('#render-datatable').dataTable({
+            "paging": true,
+            "processing": false,
+            "serverSide": true,
+            "order": [],
+            // Load data for the table's content from an Ajax source
+            "ajax": {
+                "url": baseurl+"curd/getAllEmployees",
+                "type": "POST",
+                "data": function ( data ) {
+                    data.fullname = $('#name_filter').val();
+                    data.email = $('#email_filter').val();
+                    data.contact = $('#contact_filter').val();
+                    data.address = $('#address_filter').val();
+                }
+            },
+            dom: 'lBfrtip',
+            buttons: [{
+                    extend: 'excel',
+                    text: '<i class="far fa-file-excel" aria-hidden="true"></i> Excel Export',
+                    filename: 'members',
+                    title: '',
+                    exportOptions: {
+                        modifier: {
+                            search: 'applied',
+                            order: 'applied',
+                            page: 'current'
+                        },
+                        columns: [1, 2, 3]
+                    }
+                },
+                {
+                    extend: 'csv',
+                    text: '<i class="far fa-csv"></i> Export CSV',
+                    filename: 'members',
+                    title: '',
+                    exportOptions: {
+                        modifier: {
+                            search: 'applied',
+                            order: 'applied',
+                            page: 'current'
+                        },
+                        columns: [1, 2, 3, 4, 5]
+                    }
+                },
+                {
+                    extend: 'pdf',
+                    text: '<i class="far fa-file-pdf" aria-hidden="true"></i> PDF',
+                    filename: 'members',
+                    title: '',
+                    exportOptions: {
+                        modifier: {
+                            search: 'applied',
+                            order: 'applied',
+                            page: 'current'
+                        },
+                        columns: [1, 2, 3, 4, 5]
+                    }
+                },
+            ],
+            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            "columns": [
+                {
+                    "bVisible": false, "aTargets": [0]
+                },
+                null,
+                null,
+                null,
+                null,
+                null,
+                {
+                    // render action button
+                    mRender: function (data, type, row) {
+                        var bindHtml = '';
+                        bindHtml += '<a data-toggle="modal" data-target="#dispaly-employee" href="javascript:void(0);" title="View Employee" class="display-emp ml-1 btn-ext-small btn btn-sm btn-info"  data-geteid="' + row[0] + '" rel="noopener noreferrer"><i class="fas fa-eye"></i></a>';
+                        bindHtml += '<a data-toggle="modal" data-target="#update-employee" href="javascript:void(0);" title="Edit Employee" class="update-emp-details ml-1 btn-ext-small btn btn-sm btn-primary"  data-getueid="' + row[0] + '" rel="noopener noreferrer"><i class="fas fa-edit"></i></a>';
+                        bindHtml += '<a data-toggle="modal" data-target="#delete-employee" href="javascript:void(0);" title="Delete Employee" class="delete-em-details ml-1 btn-ext-small btn btn-sm btn-danger" data-getdeid="' + row[0] + '" rel="noopener noreferrer"><i class="fas fa-times"></i></a>';
+                        return bindHtml;
+                    }
+                },
+                
+            ],
+            "fnCreatedRow": function( nRow, aData, iDataIndex ) {
+                $(nRow).attr('id', aData[0]);
+            }
+        });
+
+        // define method global search
+        function filterGlobal(v) {
+            jQuery('#render-datatable').DataTable().search(
+                    v,
+                    false,
+                    false
+                    ).draw();
+        }
+        
+        // filter keyword
+        jQuery('input.global_filter').on('keyup click', function () {
+            var v = jQuery(this).val();    
+            filterGlobal(v);
+        });
+        jQuery('input.column_filter').on('keyup click', function () {
+            jQuery('#render-datatable').DataTable().ajax.reload();
+        });
+    });
+
+</script>
